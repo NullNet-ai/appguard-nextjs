@@ -47,4 +47,5 @@ dist
 token.txt
 .env
 .next
+.idea
 
