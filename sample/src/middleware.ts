@@ -1,13 +1,19 @@
-import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import {AppGuardConfig, createAppGuardMiddleware, FirewallPolicy} from "@nullnet/appguard-nextjs";
 
-// This function can be marked `async` if using `await` inside
-export function middleware(request: NextRequest) {
-    console.log(request);
-    return NextResponse.json(
-        { success: false, message: 'Unauthorized' },
-        { status: 401 }
-    )
+const appGuardConfig: AppGuardConfig = {
+    host: 'localhost',
+    port: 50051,
+    tls: false,
+    defaultPolicy: FirewallPolicy.ALLOW,
+    timeout: 1_000,
+    firewall: "[]",
+}
+
+let appGuardMiddleware = createAppGuardMiddleware(appGuardConfig);
+
+export async function middleware(request: NextRequest) {
+    await appGuardMiddleware(request)
 }
 
 // matches all paths by default

@@ -13,6 +13,7 @@ import type { AppGuardTcpResponse as _appguard_AppGuardTcpResponse, AppGuardTcpR
 import type { Empty as _appguard_Empty, Empty__Output as _appguard_Empty__Output } from '../appguard/Empty';
 import type { HeartbeatRequest as _appguard_HeartbeatRequest, HeartbeatRequest__Output as _appguard_HeartbeatRequest__Output } from '../appguard/HeartbeatRequest';
 import type { HeartbeatResponse as _appguard_HeartbeatResponse, HeartbeatResponse__Output as _appguard_HeartbeatResponse__Output } from '../appguard/HeartbeatResponse';
+import type { Logs as _appguard_Logs, Logs__Output as _appguard_Logs__Output } from '../appguard/Logs';
 
 export interface AppGuardClient extends grpc.Client {
   HandleHttpRequest(argument: _appguard_AppGuardHttpRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_appguard_AppGuardResponse__Output>): grpc.ClientUnaryCall;
@@ -32,6 +33,15 @@ export interface AppGuardClient extends grpc.Client {
   handleHttpResponse(argument: _appguard_AppGuardHttpResponse, metadata: grpc.Metadata, callback: grpc.requestCallback<_appguard_AppGuardResponse__Output>): grpc.ClientUnaryCall;
   handleHttpResponse(argument: _appguard_AppGuardHttpResponse, options: grpc.CallOptions, callback: grpc.requestCallback<_appguard_AppGuardResponse__Output>): grpc.ClientUnaryCall;
   handleHttpResponse(argument: _appguard_AppGuardHttpResponse, callback: grpc.requestCallback<_appguard_AppGuardResponse__Output>): grpc.ClientUnaryCall;
+  
+  HandleLogs(argument: _appguard_Logs, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_appguard_Empty__Output>): grpc.ClientUnaryCall;
+  HandleLogs(argument: _appguard_Logs, metadata: grpc.Metadata, callback: grpc.requestCallback<_appguard_Empty__Output>): grpc.ClientUnaryCall;
+  HandleLogs(argument: _appguard_Logs, options: grpc.CallOptions, callback: grpc.requestCallback<_appguard_Empty__Output>): grpc.ClientUnaryCall;
+  HandleLogs(argument: _appguard_Logs, callback: grpc.requestCallback<_appguard_Empty__Output>): grpc.ClientUnaryCall;
+  handleLogs(argument: _appguard_Logs, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_appguard_Empty__Output>): grpc.ClientUnaryCall;
+  handleLogs(argument: _appguard_Logs, metadata: grpc.Metadata, callback: grpc.requestCallback<_appguard_Empty__Output>): grpc.ClientUnaryCall;
+  handleLogs(argument: _appguard_Logs, options: grpc.CallOptions, callback: grpc.requestCallback<_appguard_Empty__Output>): grpc.ClientUnaryCall;
+  handleLogs(argument: _appguard_Logs, callback: grpc.requestCallback<_appguard_Empty__Output>): grpc.ClientUnaryCall;
   
   HandleSmtpRequest(argument: _appguard_AppGuardSmtpRequest, metadata: grpc.Metadata, options: grpc.CallOptions, callback: grpc.requestCallback<_appguard_AppGuardResponse__Output>): grpc.ClientUnaryCall;
   HandleSmtpRequest(argument: _appguard_AppGuardSmtpRequest, metadata: grpc.Metadata, callback: grpc.requestCallback<_appguard_AppGuardResponse__Output>): grpc.ClientUnaryCall;
@@ -81,6 +91,8 @@ export interface AppGuardHandlers extends grpc.UntypedServiceImplementation {
   
   HandleHttpResponse: grpc.handleUnaryCall<_appguard_AppGuardHttpResponse__Output, _appguard_AppGuardResponse>;
   
+  HandleLogs: grpc.handleUnaryCall<_appguard_Logs__Output, _appguard_Empty>;
+  
   HandleSmtpRequest: grpc.handleUnaryCall<_appguard_AppGuardSmtpRequest__Output, _appguard_AppGuardResponse>;
   
   HandleSmtpResponse: grpc.handleUnaryCall<_appguard_AppGuardSmtpResponse__Output, _appguard_AppGuardResponse>;
@@ -96,6 +108,7 @@ export interface AppGuardHandlers extends grpc.UntypedServiceImplementation {
 export interface AppGuardDefinition extends grpc.ServiceDefinition {
   HandleHttpRequest: MethodDefinition<_appguard_AppGuardHttpRequest, _appguard_AppGuardResponse, _appguard_AppGuardHttpRequest__Output, _appguard_AppGuardResponse__Output>
   HandleHttpResponse: MethodDefinition<_appguard_AppGuardHttpResponse, _appguard_AppGuardResponse, _appguard_AppGuardHttpResponse__Output, _appguard_AppGuardResponse__Output>
+  HandleLogs: MethodDefinition<_appguard_Logs, _appguard_Empty, _appguard_Logs__Output, _appguard_Empty__Output>
   HandleSmtpRequest: MethodDefinition<_appguard_AppGuardSmtpRequest, _appguard_AppGuardResponse, _appguard_AppGuardSmtpRequest__Output, _appguard_AppGuardResponse__Output>
   HandleSmtpResponse: MethodDefinition<_appguard_AppGuardSmtpResponse, _appguard_AppGuardResponse, _appguard_AppGuardSmtpResponse__Output, _appguard_AppGuardResponse__Output>
   HandleTcpConnection: MethodDefinition<_appguard_AppGuardTcpConnection, _appguard_AppGuardTcpResponse, _appguard_AppGuardTcpConnection__Output, _appguard_AppGuardTcpResponse__Output>

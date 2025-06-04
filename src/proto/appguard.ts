@@ -25,6 +25,8 @@ export interface ProtoGrpcType {
     FirewallPolicy: EnumTypeDefinition
     HeartbeatRequest: MessageTypeDefinition
     HeartbeatResponse: MessageTypeDefinition
+    Log: MessageTypeDefinition
+    Logs: MessageTypeDefinition
   }
 }
 

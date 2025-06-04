@@ -1,5 +1,5 @@
 {
-  "name": "appguard-nextjs",
+  "name": "appguard-nextjs-sample",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,15 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "next": "15.3.3"
+    "@nullnet/appguard-nextjs": "file:../",
+    "next": "15.3.3",
+    "dotenv": "^16.5.0"
   },
   "devDependencies": {
     "typescript": "^5",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
     "@tailwindcss/postcss": "^4",
     "tailwindcss": "^4"
   }
