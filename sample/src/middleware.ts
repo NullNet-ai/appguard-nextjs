@@ -1,4 +1,4 @@
-import type { NextRequest } from 'next/server'
+import type {NextRequest} from 'next/server'
 import {AppGuardConfig, createAppGuardMiddleware, FirewallPolicy} from "../../src";
 
 const appGuardConfig: AppGuardConfig = {
@@ -13,7 +13,7 @@ const appGuardConfig: AppGuardConfig = {
 let appGuardMiddleware = createAppGuardMiddleware(appGuardConfig);
 
 export default async function middleware(request: NextRequest) {
-    await appGuardMiddleware(request)
+    return await appGuardMiddleware(request);
 }
 
 export const config = {

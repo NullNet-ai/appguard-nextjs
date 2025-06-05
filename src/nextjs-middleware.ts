@@ -20,7 +20,6 @@ export type AppGuardConfig = {
 
 
 export const createAppGuardMiddleware = (config: AppGuardConfig) => {
-  console.log("createAppGuardMiddleware");
   const appGuardService = new AppGuardService(config.host, config.port, config.tls);
   let authHandler = new AuthHandler(appGuardService);
 
@@ -106,7 +105,6 @@ export const createAppGuardMiddleware = (config: AppGuardConfig) => {
   // };
 
   const handleIncomingRequest: NextjsMiddleware = async (req): Promise<NextResponse> => {
-    console.log("handleIncomingRequest");
     try {
         const sourceIp =
             req.headers.get('x-real-ip') ||
