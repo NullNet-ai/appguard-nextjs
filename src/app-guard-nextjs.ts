@@ -14,8 +14,7 @@ import {DeviceStatus} from "./proto/appguard/DeviceStatus";
 import {TOKEN_FILE} from "./auth";
 import {AppGuardFirewall, AppGuardFirewall__Output} from "./proto/appguard/AppGuardFirewall";
 
-const PROTO_FILE = __dirname + '/../proto/appguard.proto'
-const packageDef = protoLoader.loadSync(path.resolve(__dirname, PROTO_FILE))
+const packageDef = protoLoader.loadSync('../proto/appguard.proto')
 const grpcObj = (grpc.loadPackageDefinition(packageDef) as unknown) as ProtoGrpcType
 
 // it doesn't work with .cer files, convert them to .pem with the following command:
