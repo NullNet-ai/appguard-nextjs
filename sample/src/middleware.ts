@@ -12,26 +12,18 @@ const appGuardConfig: AppGuardConfig = {
 
 let appGuardMiddleware = createAppGuardMiddleware(appGuardConfig);
 
-export async function middleware(request: NextRequest) {
+export default async function middleware(request: NextRequest) {
     await appGuardMiddleware(request)
 }
 
-// This is to fix the following error:
-// Dynamic Code Evaluation (e. g. 'eval', 'new Function', 'WebAssembly.compile') not allowed in Edge Runtime
-// Learn More: https://nextjs.org/docs/messages/edge-dynamic-code-evaluation
+// allow Node.js runtime for middleware: https://nextjs.org/blog/next-15-2#nodejs-middleware-experimental
+// this also requires next@canary: https://nextjs.org/docs/messages/ppr-preview
 export const config = {
-    unstable_allowDynamic: [
-        // '**/node_modules/@grpc/proto-loader/**',
-        // '**/node_modules/@nullnet/appguard-nextjs/**',
-        '**/node_modules/**',
-        // '**/src/**',
-    ],
-}
-
-// matches all paths by default
-// export const config = {
+    runtime: 'nodejs'
+//     matches all paths by default
 //     matcher: '/about/:path*',
-// }
+};
+
 
 // the NextRequest object is in the following format:
 // {
