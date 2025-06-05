@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import {NextRequest, NextResponse} from 'next/server'
 import { AppGuardService } from './app-guard-nextjs';
 // import { AppGuardTcpInfo } from './proto/appguard/AppGuardTcpInfo';
 import { FirewallPolicy } from './proto/appguard/FirewallPolicy';
@@ -7,7 +7,7 @@ import {AppGuardTcpResponse__Output} from "./proto/appguard/AppGuardTcpResponse"
 import {AppGuardTcpConnection} from "./proto/appguard/AppGuardTcpConnection";
 import {AuthHandler} from "./auth";
 
-type NextjsMiddleware = (req: Request) => Promise<NextResponse>;
+type NextjsMiddleware = (req: NextRequest) => Promise<NextResponse>;
 
 export type AppGuardConfig = {
   host: string;
@@ -27,13 +27,11 @@ export const createAppGuardMiddleware = (config: AppGuardConfig) => {
     await appGuardService.onModuleInit();
     await authHandler.init();
     await appGuardService.updateFirewall({
-        // @ts-ignore
         token: authHandler.token(),
-        // @ts-ignore
         firewall: config.firewall
     })
   }
-  initialize();
+  initialize().finally();
 
     const firewallPromise = (promise: Promise<AppGuardResponse__Output>): Promise<AppGuardResponse__Output> => {
         if (config.timeout !== undefined) {
@@ -108,45 +106,35 @@ export const createAppGuardMiddleware = (config: AppGuardConfig) => {
 
   const handleIncomingRequest: NextjsMiddleware = async (req): Promise<NextResponse> => {
     try {
-      // @ts-ignore
-      const sourceIp =
-        // @ts-ignore
-        req.headers['x-real-ip'] ||
-        // @ts-ignore
-        req.headers['x-forwarded-for'] ||
-        // @ts-ignore
-        req.socket.remoteAddress;
+        const sourceIp =
+            req.headers.get('x-real-ip') ||
+            req.headers.get('x-forwarded-for') || undefined;
+
+        const sourcePort = req.headers.get('x-forwarded-port') ?
+            parseInt(req.headers.get('x-forwarded-port') as string, 10) :
+            undefined;
 
       const handleTCPConnectionResponse = await connectionPromise(
           {
-              // @ts-ignore
               sourceIp: sourceIp,
-              // @ts-ignore
-              sourcePort: req.socket.remotePort,
-              // @ts-ignore
-              destinationIp: req.socket.localAddress,
-              // @ts-ignore
-              destinationPort: req.socket.localPort,
-              // @ts-ignore
-              protocol: req.protocol,
-              // @ts-ignore
+              sourcePort: sourcePort,
+              destinationIp: undefined,
+              destinationPort: undefined,
+              protocol: req.headers.get('x-forwarded-proto') || undefined,
               token: authHandler.token()
           }
       );
       const handleHTTPRequestResponse = await firewallPromise(appGuardService.handleHttpRequest(
         {
+          originalUrl: req.nextUrl.pathname,
           // @ts-ignore
-          originalUrl: req.originalUrl,
-          // @ts-ignore
-          headers: req.headers as Record<string, string>,
-          // @ts-ignore
+          // headers: req.headers as Record<string, string>,
           method: req.method,
           // @ts-ignore
-          body: req.body,
+          // body: req.body,
           // @ts-ignore
-          query: req.query as Record<string, string>,
+          // query: req.nextUrl.searchParams as Record<string, string>,
           tcpInfo: handleTCPConnectionResponse.tcpInfo,
-          // @ts-ignore
           token: authHandler.token()
         }
       ));
@@ -168,17 +156,15 @@ export const createAppGuardMiddleware = (config: AppGuardConfig) => {
         //   res,
         //   handleTCPConnectionResponse.tcpInfo as AppGuardTcpInfo
         // );
-        // next();
+        return NextResponse.next();
       }
     } catch (error) {
       console.error(error);
-      // @ts-ignore
-      res.status(500).send({
-        module: 'app-guard',
-        message: 'Internal server error',
-      });
+      return NextResponse.json(
+            { success: false, message: 'Internal server error' },
+            { status: 500 }
+        );
     }
-    return NextResponse.next();
   };
 
   return handleIncomingRequest;
