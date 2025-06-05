@@ -130,12 +130,12 @@ export const createAppGuardMiddleware = (config: AppGuardConfig) => {
         {
           originalUrl: req.nextUrl.pathname,
           // @ts-ignore
-          // headers: req.headers as Record<string, string>,
+          headers: req.headers as Record<string, string>,
           method: req.method,
           // @ts-ignore
-          // body: req.body,
+          body: req.body,
           // @ts-ignore
-          // query: req.nextUrl.searchParams as Record<string, string>,
+          query: req.nextUrl.searchParams as Record<string, string>,
           tcpInfo: handleTCPConnectionResponse.tcpInfo,
           token: authHandler.token()
         }
