@@ -1,5 +1,5 @@
 import type { NextRequest } from 'next/server'
-import {AppGuardConfig, createAppGuardMiddleware, FirewallPolicy} from "@nullnet/appguard-nextjs";
+import {AppGuardConfig, createAppGuardMiddleware, FirewallPolicy} from "../../src";
 
 const appGuardConfig: AppGuardConfig = {
     host: 'localhost',
@@ -14,6 +14,18 @@ let appGuardMiddleware = createAppGuardMiddleware(appGuardConfig);
 
 export async function middleware(request: NextRequest) {
     await appGuardMiddleware(request)
+}
+
+// This is to fix the following error:
+// Dynamic Code Evaluation (e. g. 'eval', 'new Function', 'WebAssembly.compile') not allowed in Edge Runtime
+// Learn More: https://nextjs.org/docs/messages/edge-dynamic-code-evaluation
+export const config = {
+    unstable_allowDynamic: [
+        // '**/node_modules/@grpc/proto-loader/**',
+        // '**/node_modules/@nullnet/appguard-nextjs/**',
+        '**/node_modules/**',
+        // '**/src/**',
+    ],
 }
 
 // matches all paths by default
@@ -77,4 +89,3 @@ export async function middleware(request: NextRequest) {
 //         [Symbol(kComposite)]: false
 // }
 // }
-

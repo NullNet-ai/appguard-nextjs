@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
 import { AppGuardService } from './app-guard-nextjs';
-import { AppGuardTcpInfo } from './proto/appguard/AppGuardTcpInfo';
+// import { AppGuardTcpInfo } from './proto/appguard/AppGuardTcpInfo';
 import { FirewallPolicy } from './proto/appguard/FirewallPolicy';
 import {AppGuardResponse__Output} from "./proto/appguard/AppGuardResponse";
 import {AppGuardTcpResponse__Output} from "./proto/appguard/AppGuardTcpResponse";
