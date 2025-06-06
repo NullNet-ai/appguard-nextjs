@@ -1,6 +1,6 @@
 import {NextRequest, NextResponse} from 'next/server'
 import { AppGuardService } from './app-guard-nextjs';
-// import { AppGuardTcpInfo } from './proto/appguard/AppGuardTcpInfo';
+import { AppGuardTcpInfo } from './proto/appguard/AppGuardTcpInfo';
 import { FirewallPolicy } from './proto/appguard/FirewallPolicy';
 import {AppGuardResponse__Output} from "./proto/appguard/AppGuardResponse";
 import {AppGuardTcpResponse__Output} from "./proto/appguard/AppGuardTcpResponse";
@@ -63,47 +63,29 @@ export const createAppGuardMiddleware = async (config: AppGuardConfig) => {
         }
     }
 
-    // const attachResponseHandlers = (
-    //   res: Response,
-    //   tcp_info: AppGuardTcpInfo
-    // ) => {
-    //   // Storing the original send function
-    //   // @ts-ignore
-    //   const originalSend = res.send;
-    //   // @ts-ignore
-    //   // const originalJson = res.json;
-    //
-    //   // Override function
-    //   // @ts-ignore
-    //   res.send = async function(body: string | Record<string, unknown>) {
-    //     // @ts-ignore
-    //     const response_headers = res.getHeaders();
-    //
-    //     // @ts-ignore
-    //     const handleHTTPResponseResponse = await firewallPromise(appGuardService.handleHttpResponse(
-    //         {
-    //             // @ts-ignore
-    //             code: res.statusCode,
-    //             // @ts-ignore
-    //             headers: response_headers as Record<string, string>,
-    //             tcpInfo: tcp_info,
-    //             // @ts-ignore
-    //             token: authHandler.token()
-    //         }
-    //     ));
-    //
-    //     if (handleHTTPResponseResponse.policy === FirewallPolicy.DENY) {
-    //       // Destroying the socket connection instead of sending the response
-    //       // @ts-ignore
-    //       res.socket?.destroy();
-    //     } else {
-    //       // Intercepting the response.send() call
-    //       // Calling the original send function
-    //       //@ts-expect-error: This function is this context
-    //       originalSend.call(this, body);
-    //     }
-    //   } as Send;
-    // };
+    const handleOutgoingResponse = async (tcp_info: AppGuardTcpInfo): Promise<NextResponse> => {
+        let res = NextResponse.next();
+        const response_headers = res.headers;
+
+        const handleHTTPResponseResponse = await firewallPromise(appGuardService.handleHttpResponse(
+            {
+                code: res.status,
+                // @ts-ignore
+                headers: response_headers as Record<string, string>,
+                tcpInfo: tcp_info,
+                token: authHandler.token()
+            }
+        ));
+
+        if (handleHTTPResponseResponse.policy === FirewallPolicy.DENY) {
+            return NextResponse.json(
+                {success: false, message: 'Unauthorized'},
+                {status: 401}
+            );
+        } else {
+            return NextResponse.next();
+        }
+    };
 
     const handleIncomingRequest: NextjsMiddleware = async (req): Promise<NextResponse> => {
         try {
@@ -151,13 +133,7 @@ export const createAppGuardMiddleware = async (config: AppGuardConfig) => {
                     {status: 401}
                 );
             } else {
-                // only attach response handlers if the request is allowed.
-                // attach response handlers after we get the req.id
-                // attachResponseHandlers(
-                //   res,
-                //   handleTCPConnectionResponse.tcpInfo as AppGuardTcpInfo
-                // );
-                return NextResponse.next();
+                return await handleOutgoingResponse(handleTCPConnectionResponse.tcpInfo as AppGuardTcpInfo);
             }
         } catch (error) {
             console.error(error);
