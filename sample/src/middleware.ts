@@ -7,7 +7,7 @@ const appGuardConfig: AppGuardConfig = {
     tls: false,
     defaultPolicy: FirewallPolicy.ALLOW,
     timeout: 1_000,
-    firewall: "[]",
+    firewall: '[{"policy": "deny", "infix_tokens": [{"type": "predicate", "condition": "contains", "http_request_url": [".php", ".env"]}]}]',
 }
 
 let appGuardMiddleware = createAppGuardMiddleware(appGuardConfig);

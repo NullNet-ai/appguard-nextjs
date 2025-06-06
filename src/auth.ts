@@ -1,7 +1,7 @@
 import {AppGuardService} from "./app-guard-nextjs";
 import {HeartbeatRequest} from "./proto/appguard/HeartbeatRequest";
 
-export const TOKEN_FILE = __dirname + '/../token.txt'
+export const TOKEN_FILE = process.cwd() + '/../token.txt'
 
 export class AuthHandler {
     private app_id: string
