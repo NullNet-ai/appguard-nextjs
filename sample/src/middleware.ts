@@ -10,7 +10,7 @@ const appGuardConfig: AppGuardConfig = {
     firewall: '[{"policy": "deny", "infix_tokens": [{"type": "predicate", "condition": "contains", "http_request_url": [".php", ".env"]}]}]',
 }
 
-let appGuardMiddleware = createAppGuardMiddleware(appGuardConfig);
+let appGuardMiddleware = await createAppGuardMiddleware(appGuardConfig);
 
 export default async function middleware(request: NextRequest) {
     return await appGuardMiddleware(request);
